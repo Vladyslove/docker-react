@@ -7,3 +7,36 @@ before_install:
 
 script:
   -  docker run -e CI=true vladstepanov/docker-react npm run test
+
+deploy:
+#  edge: true
+#  Fix for Missing bucket_name error
+#  The dpl script Travis uses to deploy and do build verification is
+#  currently broken for many students. If you are getting a persistent
+#  missing bucket_name error with a failed build you will need to add the
+#  following to your .travis.yml file:
+#    What this is doing is forcing Travis to use the v2 (experimental)
+#    version of the dpl script which does not have the bug.
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-us-west-2-603648456548"
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+
+#  Travis Script Fix for access_key_id
+#  In the upcoming lecture we will be adding our AWS variables to the
+#  deploy script of the .travis.yml file. There is a slight change that
+#  will be required, otherwise you will get an error when Travis
+#  attempts to run your code.
+
+# The code will now look like this:
+#  access_key_id: $AWS_ACCESS_KEY
+#  secret_access_key: $AWS_SECRET_KEY
+
+
